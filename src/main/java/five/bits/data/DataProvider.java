@@ -28,7 +28,8 @@ public class DataProvider {
     private static final Logger LOGGER = LogManager.getLogger(DataProvider.class);
 
     private String url;
-    private String token;
+    private String team;
+    private String token = null;
     private List<Car> cars = new LinkedList<>();
     private List<Route> routes = new LinkedList<>();
     private List<Point> points = new LinkedList<>();
@@ -37,7 +38,6 @@ public class DataProvider {
     private CountDownLatch latch;
 
     private WebSocketSession webSocketSession;
-
 
     public DataProvider(String url) throws ExecutionException, InterruptedException {
         this.url = url;
@@ -62,7 +62,13 @@ public class DataProvider {
             }
         }, new WebSocketHttpHeaders(), URI.create(url)).get();
         webSocketSession.setTextMessageSizeLimit(1024 * 1024 * 10);
+    }
 
+    private void reconnect() throws ExecutionException, InterruptedException, IOException {
+        LOGGER.info("reconnect()");
+        connect();
+        send(new TeamReconnectMessage(this.team));
+        send(new ReconnectMessage(this.token));
     }
 
     public void close() throws IOException {
@@ -71,23 +77,34 @@ public class DataProvider {
         }
     }
 
-    public void send(Object o) throws IOException, InterruptedException {
-        if (o instanceof ClientMessage) {
+    public void send(Object o) throws IOException, InterruptedException, ExecutionException {
+        if (o instanceof TeamMessage) {
+            this.team = ((TeamMessage) o).getTeam();
             latch = new CountDownLatch(4);
+        } else if (o instanceof TeamReconnectMessage) {
+            latch = new CountDownLatch(1);
         } else if (o instanceof GotoMessage) {
             latch = new CountDownLatch(2);
+        } else if (o instanceof ReconnectMessage) {
+            latch = new CountDownLatch(0);
         } else {
             throw new IllegalArgumentException(o.getClass().getName());
         }
         ObjectMapper mapper = new ObjectMapper();
         String msg = mapper.writeValueAsString(o);
         LOGGER.info("send message: {}", msg);
-        webSocketSession.sendMessage(new TextMessage(msg));
+        try {
+            webSocketSession.sendMessage(new TextMessage(msg));
+        } catch (IllegalStateException | IOException e) {
+            reconnect();
+            LOGGER.info("resend message: {}", msg);
+            webSocketSession.sendMessage(new TextMessage(msg));
+        }
         latch.await();
     }
 
     @SuppressWarnings("unchecked")
-    protected void parseResponse(String payload) {
+    private void parseResponse(String payload) {
         LOGGER.debug("parseResponse: {}", payload);
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -98,7 +115,9 @@ public class DataProvider {
                 try {
                     switch (k) {
                         case "token":
-                            this.token = resp.get(k).toString();
+                            if (null == this.token) {
+                                this.token = resp.get(k).toString();
+                            }
                             latch.countDown();
                             break;
                         case "cars":

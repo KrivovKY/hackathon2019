@@ -1,9 +1,9 @@
 package five.bits.data;
 
-public class ClientMessage {
+public class TeamMessage {
     private String team;
 
-    public ClientMessage(String team) {
+    public TeamMessage(String team) {
         this.team = team;
     }
 

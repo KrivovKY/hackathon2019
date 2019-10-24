@@ -1,6 +1,6 @@
 package five.bits;
 
-import five.bits.data.ClientMessage;
+import five.bits.data.TeamMessage;
 import five.bits.data.DataProvider;
 import five.bits.data.GotoMessage;
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +11,8 @@ public class Application {
 
     public static void main(String[] args) throws Exception {
         DataProvider provider = new DataProvider("ws://localhost:8080/race");
-        provider.send(new ClientMessage("5bit"));
+        //DataProvider provider = new DataProvider("ws://172.30.9.50:8080/race");
+        provider.send(new TeamMessage("5bit"));
 
         provider.getCars().forEach(c -> {
             LOGGER.info(c.getId());
@@ -21,9 +22,11 @@ public class Application {
         LOGGER.info("traffic: {}", provider.getTraffic().size());
         LOGGER.info("routes: {}", provider.getRoutes().size());
 
+        //Thread.sleep(10000);
         provider.send(new GotoMessage(2, "sb0"));
         LOGGER.info("traffic: {}", provider.getTraffic().size());
 
+        //Thread.sleep(60000);
         provider.close();
 
     }
