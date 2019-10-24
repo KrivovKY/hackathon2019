@@ -4,6 +4,8 @@ import five.bits.model.Car;
 import five.bits.model.MainMap;
 import five.bits.model.Point;
 import five.bits.model.Route;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.List;
  * Путь до ближайшей точки
  */
 public class NearPointRouter extends AbstractRouter {
+    private static final Logger LOGGER = LogManager.getLogger(NearPointRouter.class);
+
     @Override
     public List<Route> getRoute(MainMap map, Point currPoint, Car currCar) {
         List<Route> localRoutes = new ArrayList<>();
@@ -29,6 +33,7 @@ public class NearPointRouter extends AbstractRouter {
         }
         localRoutes.sort(Route.timeComparator);
         result.add(localRoutes.get(0));
+        LOGGER.info("found Next point {} for car {}", result.get(0).getTo().getId(), currCar.getId());
         return result;
     }
 }

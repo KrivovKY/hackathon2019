@@ -4,11 +4,14 @@ import five.bits.model.Car;
 import five.bits.model.MainMap;
 import five.bits.model.Point;
 import five.bits.model.Route;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NextPointRouter extends AbstractRouter {
+    private static final Logger LOGGER = LogManager.getLogger(NextPointRouter.class);
 
     @Override
     public List<Route> getRoute(MainMap map, Point current, Car currCar) {
@@ -27,6 +30,7 @@ public class NextPointRouter extends AbstractRouter {
         }
         localRoutes.sort(Route.smartComparatorTo);
         result.add(localRoutes.get(0));
+        LOGGER.info("found Next point {} for car {}", result.get(0).getTo().getId(), currCar.getId());
         return result;
     }
 }

@@ -4,6 +4,8 @@ import five.bits.model.Car;
 import five.bits.model.MainMap;
 import five.bits.model.Point;
 import five.bits.model.Route;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -11,6 +13,7 @@ import java.util.List;
  * Возвращает путь до базовой точки
  */
 public class WayHomeRouter extends AbstractRouter {
+    private static final Logger LOGGER = LogManager.getLogger(WayHomeRouter.class);
 
     /**
      * длинна пути на базу из заданной точки
@@ -41,6 +44,7 @@ public class WayHomeRouter extends AbstractRouter {
     @Override
     public List<Route> getRoute(MainMap map, Point current, Car currCar) {
         result.add(Route.getRouteForPoint(map.getRoutes(), current, map.getEndPoint()));
+        LOGGER.info("found Next point {} for car {}", result.get(0).getTo().getId(), currCar.getId());
         return result;
     }
 }

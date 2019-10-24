@@ -3,22 +3,24 @@ package five.bits;
 import five.bits.model.*;
 import five.bits.router.NearPointRouter;
 import five.bits.router.NextPointRouter;
-import five.bits.model.MainMap;
 import five.bits.router.WayHomeRouter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
 public class MapHandler {
-
+    public static final Double TOTAL_TIME = 480d;  //общее время задания
+    private static final Logger LOGGER = LogManager.getLogger(MapHandler.class);
     private static final Point START = new Point("0", 0d);
     private static final Point HOME = new Point("1", 0d);
-    public static final Double TOTAL_TIME = 480d;  //общее время задания
     private MainMap mainMap = new MainMap(START, HOME, TOTAL_TIME);
 
     /**
      * Создание модели данных
      */
-    public void createMap (List<Car> cars, List<Point> points, List<Route> routes, List<Traffic> traffics) {
+    public void createMap(List<Car> cars, List<Point> points, List<Route> routes, List<Traffic> traffics) {
+        LOGGER.info("create new Map");
         mainMap.setCars(cars);
         mainMap.setPoints(points);
         mainMap.setRoutes(routes);
@@ -27,11 +29,13 @@ public class MapHandler {
 
     /**
      * Получаем следующую точку для авто
+     *
      * @param currPoint текущая точка
-     * @param car машина
+     * @param car       машина
      * @return Следубщая точка
      */
-    public Point getNextPoint (Point currPoint, Car car) {
+    public Point getNextPoint(Point currPoint, Car car) {
+        LOGGER.info("get next point for car {} from point {}", car.getId(), currPoint.getId());
         Route next;
         // Ищем Лучший вариант
         next = new NextPointRouter().getRoute(mainMap, currPoint, car).get(0);  // одна запись
@@ -53,6 +57,7 @@ public class MapHandler {
 
     /**
      * Обновление данных о пробках
+     *
      * @param newJams список новых коэффициентов
      */
     public void updateTraffic(List<Traffic> newJams) {
@@ -61,12 +66,14 @@ public class MapHandler {
 
     /**
      * Установить текущее заполнение машины
-     * @param currCar машина
+     *
+     * @param currCar  машина
      * @param capacity сумма
      */
     public void setCarCapacity(Car currCar, Double capacity) {
+        LOGGER.info("set capacity {} for car {}", capacity, currCar.getId());
         Boolean found = false;
-        for (Car car: mainMap.getCars()) {
+        for (Car car : mainMap.getCars()) {
             if (currCar.equals(car)) {
                 car.setCapacity(capacity);
                 found = true;
@@ -79,6 +86,7 @@ public class MapHandler {
 
     /**
      * Установка текущей суммы в хранилище
+     *
      * @param summa сумма
      */
     public void setTeamSum(Double summa) {
