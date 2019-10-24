@@ -130,7 +130,7 @@ public class DataProvider {
                         case "car":
                             break;
                         default:
-                            throw new RuntimeException("unknown key " + k);
+                            LOGGER.error("unknown key " + k);
                     }
                 } catch (IOException e) {
                     LOGGER.error(e.toString(), e);
