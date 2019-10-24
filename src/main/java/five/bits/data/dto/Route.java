@@ -3,12 +3,12 @@ package five.bits.data.dto;
 public class Route {
     private Integer a;
     private Integer b;
-    private Integer time;
+    private Double time;
 
     public Route() {
     }
 
-    public Route(Integer a, Integer b, Integer time) {
+    public Route(Integer a, Integer b, Double time) {
         this.a = a;
         this.b = b;
         this.time = time;
@@ -30,11 +30,11 @@ public class Route {
         this.b = b;
     }
 
-    public Integer getTime() {
+    public Double getTime() {
         return time;
     }
 
-    public void setTime(Integer time) {
+    public void setTime(Double time) {
         this.time = time;
     }
 }

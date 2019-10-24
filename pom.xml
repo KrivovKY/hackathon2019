@@ -39,6 +39,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+        <dependency>
+            <groupId>com.graphhopper</groupId>
+            <artifactId>jsprit-core</artifactId>
+            <version>1.7.3</version>
+        </dependency>
 	</dependencies>
 
 	<build>

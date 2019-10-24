@@ -2,12 +2,12 @@ package five.bits.data.dto;
 
 public class Point {
     private String p;
-    private Integer money;
+    private Double money;
 
     public Point() {
     }
 
-    public Point(String p, Integer money) {
+    public Point(String p, Double money) {
         this.p = p;
         this.money = money;
     }
@@ -20,11 +20,11 @@ public class Point {
         this.p = p;
     }
 
-    public Integer getMoney() {
-        return money;
+    public int getMoney() {
+        return money.intValue();
     }
 
-    public void setMoney(Integer money) {
+    public void setMoney(Double money) {
         this.money = money;
     }
 
