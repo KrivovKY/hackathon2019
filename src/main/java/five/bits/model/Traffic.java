@@ -1,29 +1,29 @@
-package bit.hackathonendpoint.data;
+package five.bits.model;
 
 public class Traffic {
-    private String from;
-    private String to;
+    private Point from;
+    private Point to;
     private Double jam;
 
-    public Traffic(String from, String to, Double jam) {
+    public Traffic(Point from, Point to, Double jam) {
         this.from = from;
         this.to = to;
         this.jam = jam;
     }
 
-    public String getFrom() {
+    public Point getFrom() {
         return from;
     }
 
-    public void setFrom(String from) {
+    public void setFrom(Point from) {
         this.from = from;
     }
 
-    public String getTo() {
+    public Point getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(Point to) {
         this.to = to;
     }
 

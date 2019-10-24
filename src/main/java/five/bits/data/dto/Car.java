@@ -1,12 +1,18 @@
-package bit.hackathonendpoint.data;
+package five.bits.data.dto;
 
 public class Car {
+    public static final Double MAX_CAPACITY = 1000000d;
     private String id;
     private Double capacity;
 
     public Car(String id, Double capacity) {
         this.id = id;
         this.capacity = capacity;
+    }
+
+    public Car(String id) {
+        this.id = id;
+        this.capacity = 0d;
     }
 
     public String getId() {

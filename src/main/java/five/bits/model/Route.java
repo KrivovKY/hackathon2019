@@ -1,4 +1,4 @@
-package model;
+package five.bits.model;
 
 import java.util.Comparator;
 import java.util.List;
