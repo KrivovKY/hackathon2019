@@ -15,7 +15,9 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.graphhopper.jsprit.core.util.VehicleRoutingTransportCostsMatrix;
-import five.bits.data.dto.*;
+import five.bits.data.dto.Point;
+import five.bits.data.dto.Route;
+import five.bits.data.dto.Traffic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,24 +38,24 @@ public class CostMatrix {
     VehicleRoutingAlgorithm vra;
     Collection<VehicleRoutingProblemSolution> solutions;
 
-    public void setServices(List<Point> lp){
-        for(Point p: lp){
+    public void setServices(List<Point> lp) {
+        for (Point p : lp) {
             services.add(Service.Builder.newInstance(p.getP().toString()).addSizeDimension(0, p.getMoney())
-                .setLocation(Location.newInstance(p.getP())).build());
+                    .setLocation(Location.newInstance(p.getP())).build());
         }
     }
 
-    public void setCostMatrix(List<Route> routes,List<Traffic> traffic){
-        for(Route r: routes){
+    public void setCostMatrix(List<Route> routes, List<Traffic> traffic) {
+        for (Route r : routes) {
             List<Traffic> result = traffic.stream()
-                .filter(item -> item.getA().equals(r.getA()) && item.getB().equals(r.getB()))
-                .collect(Collectors.toList());
-            if(result.size() == 0){
-                LOGGER.info("Not found jam for a:{} b:{}", r.getA().toString(),r.getB().toString());
+                    .filter(item -> item.getA().equals(r.getA()) && item.getB().equals(r.getB()))
+                    .collect(Collectors.toList());
+            if (result.size() == 0) {
+                LOGGER.info("Not found jam for a:{} b:{}", r.getA().toString(), r.getB().toString());
                 continue;
             }
-            if(result.size() > 1){
-                LOGGER.info("More jams than 1 for a:{} b:{}", r.getA().toString(),r.getB().toString());
+            if (result.size() > 1) {
+                LOGGER.info("More jams than 1 for a:{} b:{}", r.getA().toString(), r.getB().toString());
                 continue;
             }
             r.setTime(r.getTime() * result.get(0).getJam());
@@ -63,22 +65,22 @@ public class CostMatrix {
         }
     }
 
-    public void setUp(){
+    public void setUp() {
         costMatrix = costMatrixBuilder.build();
         type = VehicleTypeImpl.Builder.newInstance("type").addCapacityDimension(0, 1000000).setCostPerTime(1).setCostPerDistance(1).build();
         vehicle = VehicleImpl.Builder.newInstance("vehicle")
-            .setStartLocation(Location.newInstance("0")).
-                setEndLocation(Location.newInstance("1")).setType(type).build();
+                .setStartLocation(Location.newInstance("0")).
+                        setEndLocation(Location.newInstance("1")).setType(type).build();
 
         builder.addVehicle(vehicle).addAllJobs(services).setRoutingCost(costMatrix);
         vrp = builder.build();
-        vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET,"true").buildAlgorithm();//Jsprit.createAlgorithm(vrp);
+        vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.FAST_REGRET, "true").buildAlgorithm();//Jsprit.createAlgorithm(vrp);
         solutions = vra.searchSolutions();
     }
 
-    public void printSolutions(){
-        for(VehicleRoute vr: Solutions.bestOf(solutions).getRoutes()){
-            printTrace(vehicle,vr,costMatrix);
+    public void printSolutions() {
+        for (VehicleRoute vr : Solutions.bestOf(solutions).getRoutes()) {
+            printTrace(vehicle, vr, costMatrix);
             /*if(shortSolution > vr.getTourActivities().jobSize()) {
 
                 if(!vrts.isEmpty())
@@ -89,28 +91,26 @@ public class CostMatrix {
         }
     }
 
-    static void printTrace(Vehicle vehicle, VehicleRoute vrts, VehicleRoutingTransportCosts costMatrix){
+    static void printTrace(Vehicle vehicle, VehicleRoute vrts, VehicleRoutingTransportCosts costMatrix) {
         Double totalTime = 0.0;
         int totalCapacity = 0;
-        System.out.println("Start Point: " + vehicle.getStartLocation().getId());
+        LOGGER.debug("Start Point: {}", vehicle.getStartLocation().getId());
         String fromPoint = vehicle.getStartLocation().getId();
         String endPoint = "";
         for (TourActivity ta : vrts.getActivities()) {
             endPoint = ta.getLocation().getId();
-            System.out.println("Next Point: " + endPoint +
-                " | Capacity: " + String.valueOf(ta.getSize().get(0)) +
-                " | Time: " + ((VehicleRoutingTransportCostsMatrix) costMatrix).getDistance(fromPoint,endPoint));
+            LOGGER.debug("Next Point: {} | Capacity: {} | Time: {}", endPoint, ta.getSize().get(0), ((VehicleRoutingTransportCostsMatrix) costMatrix).getDistance(fromPoint, endPoint));
             totalCapacity += ta.getSize().get(0);
-            totalTime += ((VehicleRoutingTransportCostsMatrix) costMatrix).getDistance(fromPoint,endPoint);
+            totalTime += ((VehicleRoutingTransportCostsMatrix) costMatrix).getDistance(fromPoint, endPoint);
 
             fromPoint = endPoint;
         }
         fromPoint = endPoint;
         endPoint = vehicle.getEndLocation().getId();
-        System.out.println("End Point: " + endPoint + " | Time: " + ((VehicleRoutingTransportCostsMatrix) costMatrix).getDistance(fromPoint,endPoint));
-        totalTime += ((VehicleRoutingTransportCostsMatrix) costMatrix).getDistance(fromPoint,endPoint);
-        System.out.println("TotTime: " + totalTime);
-        System.out.println("TotCapacity: " + totalCapacity);
+        LOGGER.debug("End Point: {}} | Time: {}", endPoint, ((VehicleRoutingTransportCostsMatrix) costMatrix).getDistance(fromPoint, endPoint));
+        totalTime += ((VehicleRoutingTransportCostsMatrix) costMatrix).getDistance(fromPoint, endPoint);
+        LOGGER.debug("TotTime: {}", totalTime);
+        LOGGER.debug("TotCapacity: {}", totalCapacity);
     }
 
 }
