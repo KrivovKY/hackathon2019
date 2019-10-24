@@ -7,11 +7,13 @@ public class Route implements Comparable{
     private Point from;
     private Point to;
     private Double time;
+    private Double jamTime;
 
     public Route(Point from, Point to, Double time) {
         this.from = from;
         this.to = to;
         this.time = time;
+        this.jamTime = time;
     }
 
     public Point getFrom() {
@@ -38,6 +40,14 @@ public class Route implements Comparable{
         this.time = time;
     }
 
+    public Double getJamTime() {
+        return jamTime;
+    }
+
+    public void setJamTime(Double jamTime) {
+        this.jamTime = jamTime;
+    }
+
     /**
      * Ищет прямой маршрут между заданными точками
      * @param routes
@@ -61,6 +71,12 @@ public class Route implements Comparable{
     }
 
     /**
+     * Сортировка от Игоря
+     * определяется стоимость минуты в пути
+     */
+    public static Comparator<Route> smartComparatorTo = (o1, o2) -> (int) (o1.getTo().getMoney()/o1.getTime() - o2.getTo().getMoney()/o2.getTime());
+
+    /**
      * Сотировка по сумме Конечной точки
      */
     public static Comparator<Route> moneyComparatorTo = (o1, o2) -> (int) (o1.getTo().getMoney() - o2.getTo().getMoney());
@@ -73,5 +89,5 @@ public class Route implements Comparable{
     /**
      * Сотировка по расстоянию
      */
-    public static Comparator<Route> timeComparator = (o1, o2) -> (int) (o1.getTime() - o2.getTime());
+    public static Comparator<Route> timeComparator = (o1, o2) -> (int) (o1.getJamTime() - o2.getJamTime());
 }

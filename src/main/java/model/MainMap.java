@@ -15,7 +15,7 @@ public class MainMap {
      * @param endPoint      база
      * @param restTime      оставшееся время
      */
-    public MainMap(List<Point> points, Point startPoint, Point endPoint, Double restTime) {
+    public MainMap(Point startPoint, Point endPoint, Double restTime) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.restTime = restTime;
@@ -51,6 +51,10 @@ public class MainMap {
     private Double restTime;
 
     /**
+     * Общая сумма в хранилище (для отладки и проверки)
+     */
+    private Double teamSum;
+    /**
      * Обновление списка маршрутов по новым пробкам
      *
      * @param newTraffics
@@ -60,7 +64,7 @@ public class MainMap {
             for (Route oldRoute : routes) {
                 if (oldRoute.getFrom().equals(newTraffic.getFrom()) && oldRoute.getTo().equals(newTraffic.getTo())) {
                     double newTime = oldRoute.getTime() * newTraffic.getJam();
-                    oldRoute.setTime(newTime);
+                    oldRoute.setJamTime(newTime);
                 }
             }
         }
@@ -73,7 +77,7 @@ public class MainMap {
      */
     public Boolean needGoHome(Car car, Point nextPoint) {
         double nextHomeTime = WayHomeRouter.getHomeWayLength(this, nextPoint, new WayHomeRouter().getRoute(this, null, car));
-        return nextHomeTime < restTime ;
+        return nextHomeTime > restTime ;
      }
 
     public List<Point> getPoints() {
@@ -115,6 +119,7 @@ public class MainMap {
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;
     }
+
     public Double getRestTime() {
         return restTime;
     }
@@ -123,4 +128,11 @@ public class MainMap {
         this.restTime = restTime;
     }
 
+    public Double getTeamSum() {
+        return teamSum;
+    }
+
+    public void setTeamSum(Double teamSum) {
+        this.teamSum = teamSum;
+    }
 }

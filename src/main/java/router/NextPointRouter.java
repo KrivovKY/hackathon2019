@@ -25,7 +25,7 @@ public class NextPointRouter extends AbstractRouter {
                 localRoutes.add(route);
             }
         }
-        localRoutes.sort(Route.moneyComparatorTo);
+        localRoutes.sort(Route.smartComparatorTo);
         result.add(localRoutes.get(0).getTo());
         return result;
     }
