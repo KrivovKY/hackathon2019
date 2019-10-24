@@ -76,7 +76,7 @@ public class MainMap {
      */
     public Boolean needGoHome(Car car, Point nextPoint) {
         double nextHomeTime = WayHomeRouter.getHomeWayLength(this, nextPoint, new WayHomeRouter().getRoute(this, null, car));
-        return nextHomeTime > restTime ;
+        return nextHomeTime > car.getRestTime() ;
      }
 
     public List<Point> getPoints() {
@@ -133,5 +133,14 @@ public class MainMap {
 
     public void setTeamSum(Double teamSum) {
         this.teamSum = teamSum;
+    }
+
+    public Point getPoint(String id) {
+        for (Point point: this.points) {
+            if (id.equals(point.getId())) {
+                return point;
+            }
+        }
+        return null;
     }
 }

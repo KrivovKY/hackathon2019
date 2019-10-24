@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class NearPointRouter extends AbstractRouter {
     @Override
-    public List<Point> getRoute(MainMap map, Point currPoint, Car currCar) {
+    public List<Route> getRoute(MainMap map, Point currPoint, Car currCar) {
         List<Route> localRoutes = new ArrayList<>();
         // выбираем все смежные с данной точкой маршруты
         for (Route route : map.getRoutes()) {
@@ -28,7 +28,7 @@ public class NearPointRouter extends AbstractRouter {
             }
         }
         localRoutes.sort(Route.timeComparator);
-        result.add(localRoutes.get(0).getTo());
+        result.add(localRoutes.get(0));
         return result;
     }
 }

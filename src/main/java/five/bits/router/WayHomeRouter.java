@@ -20,7 +20,7 @@ public class WayHomeRouter extends AbstractRouter {
      * @param homeWay
      * @return
      */
-    public static Double getHomeWayLength(MainMap map, Point fromPoint, List<Point> homeWay) {
+    public static Double getHomeWayLength(MainMap map, Point fromPoint, List<Route> homeWay) {
         double wayTime = 0;
         Point homePoint = map.getEndPoint(); //TODO homeWay.get(0);
         Route homeRoute = Route.getRouteForPoint(map.getRoutes(), fromPoint, homePoint);
@@ -39,8 +39,8 @@ public class WayHomeRouter extends AbstractRouter {
      * @return
      */
     @Override
-    public List<Point> getRoute(MainMap map, Point current, Car currCar) {
-        result.add(map.getEndPoint());
+    public List<Route> getRoute(MainMap map, Point current, Car currCar) {
+        result.add(Route.getRouteForPoint(map.getRoutes(), current, map.getEndPoint()));
         return result;
     }
 }

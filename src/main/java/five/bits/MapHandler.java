@@ -4,14 +4,15 @@ import five.bits.model.*;
 import five.bits.router.NearPointRouter;
 import five.bits.router.NextPointRouter;
 import five.bits.model.MainMap;
+import five.bits.router.WayHomeRouter;
 
 import java.util.List;
 
-public class MainApp {
+public class MapHandler {
 
     private static final Point START = new Point("0", 0d);
     private static final Point HOME = new Point("1", 0d);
-    private static final Double TOTAL_TIME = 480d;  //общее время задания
+    public static final Double TOTAL_TIME = 480d;  //общее время задания
     private MainMap mainMap = new MainMap(START, HOME, TOTAL_TIME);
 
     /**
@@ -31,22 +32,23 @@ public class MainApp {
      * @return Следубщая точка
      */
     public Point getNextPoint (Point currPoint, Car car) {
-        Point next;
+        Route next;
         // Ищем Лучший вариант
         next = new NextPointRouter().getRoute(mainMap, currPoint, car).get(0);  // одна запись
         // Проверяем возврат домой
-        if (mainMap.needGoHome(car, next)) {    //со следующей точки не успеваем вернуться
+        if (mainMap.needGoHome(car, next.getTo())) {    //со следующей точки не успеваем вернуться
             // ищем ближайшую точку
             next = new NearPointRouter().getRoute(mainMap, currPoint, car).get(0);
             // Проверяем возврат домой
-            if (mainMap.needGoHome(car, next)) {    //с ближайшей точки не успеваем вернуться
-                next = mainMap.getEndPoint();
+            if (mainMap.needGoHome(car, next.getTo())) {    //с ближайшей точки не успеваем вернуться
+                next = new WayHomeRouter().getRoute(mainMap, currPoint, car).get(0);
             }
         }
         if (next != null) {
-            next.setMoney(0d);  //обнуляем сумму (больше в нее не заходим)
+            mainMap.getPoint(next.getTo().getId()).setMoney(0d); //обнуляем сумму (больше в нее не заходим)
+            car.reduceRestTime(next.getTime());                   // уменьшаем оставшееся время
         }
-        return next;
+        return next.getTo();
     }
 
     /**

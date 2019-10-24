@@ -2,14 +2,18 @@ package five.bits.model;
 
 import java.util.Objects;
 
+import static five.bits.MapHandler.TOTAL_TIME;
+
 public class Car {
     public static final Double MAX_CAPACITY = 1000000d;
     private String id;
     private Double capacity;
+    private Double restTime;
 
     public Car(String id, Double capacity) {
         this.id = id;
         this.capacity = capacity;
+        this.restTime = TOTAL_TIME;
     }
 
     public Car(String id) {
@@ -31,6 +35,18 @@ public class Car {
 
     public void setCapacity(Double capacity) {
         this.capacity = capacity;
+    }
+
+    public Double getRestTime() {
+        return restTime;
+    }
+
+    public void reduceRestTime(Double time) {
+        this.restTime =- time;
+    }
+
+    public void setRestTime(Double restTime) {
+        this.restTime = restTime;
     }
 
     @Override

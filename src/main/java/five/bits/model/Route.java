@@ -74,17 +74,17 @@ public class Route implements Comparable{
      * Сортировка от Игоря
      * определяется стоимость минуты в пути
      */
-    public static Comparator<Route> smartComparatorTo = (o1, o2) -> (int) (o1.getTo().getMoney()/o1.getTime() - o2.getTo().getMoney()/o2.getTime());
+    public static Comparator<Route> smartComparatorTo = (o1, o2) -> (int) (o2.getTo().getMoney()/o2.getTime() - o1.getTo().getMoney()/o1.getTime());
 
     /**
      * Сотировка по сумме Конечной точки
      */
-    public static Comparator<Route> moneyComparatorTo = (o1, o2) -> (int) (o1.getTo().getMoney() - o2.getTo().getMoney());
+    public static Comparator<Route> moneyComparatorTo = (o1, o2) -> (int) (o2.getTo().getMoney() - o1.getTo().getMoney());
 
     /**
      * Сотировка по сумме начальной точки
      */
-    public static Comparator<Route> moneyComparatorFrom = (o1, o2) -> (int) (o1.getFrom().getMoney() - o2.getFrom().getMoney());
+    public static Comparator<Route> moneyComparatorFrom = (o1, o2) -> (int) (o2.getFrom().getMoney() - o1.getFrom().getMoney());
 
     /**
      * Сотировка по расстоянию
