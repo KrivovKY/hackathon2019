@@ -3,6 +3,7 @@ package five.bits;
 import five.bits.data.TeamMessage;
 import five.bits.data.DataProvider;
 import five.bits.data.GotoMessage;
+import five.bits.matrix.CostMatrix;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +22,11 @@ public class Application {
         LOGGER.info("points: {}", provider.getPoints().size());
         LOGGER.info("traffic: {}", provider.getTraffic().size());
         LOGGER.info("routes: {}", provider.getRoutes().size());
-
+        CostMatrix matrix = new CostMatrix();
+        matrix.setServices(provider.getPoints());
+        matrix.setCostMatrix(provider.getRoutes(),provider.getTraffic());
+        matrix.setUp();
+        matrix.printSolutions();
         //Thread.sleep(10000);
         provider.send(new GotoMessage(2, "sb0"));
         LOGGER.info("traffic: {}", provider.getTraffic().size());
