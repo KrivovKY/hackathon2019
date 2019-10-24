@@ -107,7 +107,7 @@ public class CostMatrix {
         }
         fromPoint = endPoint;
         endPoint = vehicle.getEndLocation().getId();
-        LOGGER.debug("End Point: {}} | Time: {}", endPoint, ((VehicleRoutingTransportCostsMatrix) costMatrix).getDistance(fromPoint, endPoint));
+        LOGGER.debug("End Point: {} | Time: {}", endPoint, ((VehicleRoutingTransportCostsMatrix) costMatrix).getDistance(fromPoint, endPoint));
         totalTime += ((VehicleRoutingTransportCostsMatrix) costMatrix).getDistance(fromPoint, endPoint);
         LOGGER.debug("TotTime: {}", totalTime);
         LOGGER.debug("TotCapacity: {}", totalCapacity);
