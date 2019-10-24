@@ -38,7 +38,7 @@ public class CostMatrix {
 
     public void setServices(List<Point> lp){
         for(Point p: lp){
-            services.add(Service.Builder.newInstance(p.getP()).addSizeDimension(0, p.getMoney())
+            services.add(Service.Builder.newInstance(p.getP().toString()).addSizeDimension(0, p.getMoney())
                 .setLocation(Location.newInstance(p.getP())).build());
         }
     }

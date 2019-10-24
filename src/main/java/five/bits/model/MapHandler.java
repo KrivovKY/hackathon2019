@@ -1,6 +1,5 @@
-package five.bits;
+package five.bits.model;
 
-import five.bits.model.*;
 import five.bits.router.NearPointRouter;
 import five.bits.router.NextPointRouter;
 import five.bits.router.WayHomeRouter;
@@ -16,7 +15,7 @@ public class MapHandler {
     private static final Point HOME = new Point("1", 0d);
     private MainMap mainMap = new MainMap(START, HOME, TOTAL_TIME);
 
-    /**
+     /**
      * Создание модели данных
      */
     public void createMap(List<Car> cars, List<Point> points, List<Route> routes, List<Traffic> traffics) {
@@ -91,5 +90,9 @@ public class MapHandler {
      */
     public void setTeamSum(Double summa) {
         mainMap.setTeamSum(summa);
+    }
+
+    public List<Car> getCars() {
+        return mainMap.getCars();
     }
 }

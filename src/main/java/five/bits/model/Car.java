@@ -2,7 +2,7 @@ package five.bits.model;
 
 import java.util.Objects;
 
-import static five.bits.MapHandler.TOTAL_TIME;
+import static five.bits.model.MapHandler.TOTAL_TIME;
 
 public class Car {
     public static final Double MAX_CAPACITY = 1000000d;
