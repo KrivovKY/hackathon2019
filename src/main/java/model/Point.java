@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Point {
     private String id;
     private Double money;
@@ -25,5 +27,16 @@ public class Point {
         this.money = money;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return id.equals(point.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

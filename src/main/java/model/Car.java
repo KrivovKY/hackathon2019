@@ -1,18 +1,18 @@
 package model;
 
 public class Car {
-    private static final Double CAPACITY = 1000000d;
+    public static final Double MAX_CAPACITY = 1000000d;
     private String id;
     private Double capacity;
 
     public Car(String id, Double capacity) {
         this.id = id;
-        this.capacity = CAPACITY;
+        this.capacity = capacity;
     }
 
     public Car(String id) {
         this.id = id;
-        this.capacity = CAPACITY;
+        this.capacity = 0d;
     }
 
     public String getId() {
@@ -28,7 +28,7 @@ public class Car {
     }
 
     public void setCapacity(Double capacity) {
-        this.capacity = CAPACITY;
+        this.capacity = capacity;
     }
 
 }
