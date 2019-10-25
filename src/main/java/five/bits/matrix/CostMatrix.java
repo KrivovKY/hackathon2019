@@ -99,8 +99,8 @@ public class CostMatrix {
         if(Solutions.bestOf(solutions).getRoutes().size() == 0) {
             if(decrement) {
                 LOGGER.info("END {}", new Date().toString());
-                return 1;
             }
+            return 1;
         }
         String idPoint = Solutions.bestOf(solutions).getRoutes().stream().findFirst().get().
                 getTourActivities().getActivities().stream().findFirst().get().
