@@ -7,6 +7,8 @@ import five.bits.matrix.CostMatrix;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Date;
+
 public class Application {
     private static final Logger LOGGER = LogManager.getLogger(Application.class);
 
@@ -18,7 +20,6 @@ public class Application {
         provider.getCars().forEach(c -> {
             LOGGER.info(c.getId());
         });
-
         LOGGER.info("points: {}", provider.getPoints().size());
         LOGGER.info("traffic: {}", provider.getTraffic().size());
         LOGGER.info("routes: {}", provider.getRoutes().size());
@@ -26,10 +27,21 @@ public class Application {
         matrix.setServices(provider.getPoints());
         matrix.setCostMatrix(provider.getRoutes(),provider.getTraffic());
         matrix.setUp();
+
         matrix.printSolutions();
         //Thread.sleep(10000);
-        provider.send(new GotoMessage(2, "sb0"));
-        LOGGER.info("traffic: {}", provider.getTraffic().size());
+        boolean whileDo = true;
+        while(whileDo){
+            provider.send(new GotoMessage(matrix.getNextPoint(true), matrix.getVehicleId()));
+            if(matrix.getNextPoint(false) == 1) {
+                whileDo = false;
+                continue;
+            }
+            LOGGER.info("traffic: {}", provider.getTraffic().size());
+            matrix.setServices(provider.getPoints());
+            matrix.setCostMatrix(provider.getRoutes(),provider.getTraffic());
+            matrix.setUp();
+        }
 
         //Thread.sleep(60000);
         provider.close();
