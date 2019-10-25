@@ -17,6 +17,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -138,8 +139,18 @@ public class DataProvider {
                             latch.countDown();
                             break;
                         case "traffic":
+                            traffic = new LinkedList<>();
+                            ((ArrayList)resp.get(k)).forEach(t -> {
+                                Map map = (Map) t;
+                                traffic.add(new Traffic(
+                                        Integer.parseInt(map.get("a").toString()),
+                                        Integer.parseInt(map.get("b").toString()),
+                                        Double.parseDouble(map.get("jam").toString())));
+                            });
+                            /*Map<String, String> map = mapper.readValue(payload, new TypeReference<Map<String, String>>() {
+                            });
                             traffic = mapper.readValue(payload, new TypeReference<Map<String, List<Traffic>>>() {
-                            }).get(k);
+                            }).get(k);*/
                             latch.countDown();
                             break;
                         case "carsum":
