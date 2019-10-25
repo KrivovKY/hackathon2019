@@ -31,12 +31,14 @@ public class Application {
         matrix.printSolutions();
         //Thread.sleep(10000);
         boolean whileDo = true;
+        Integer lastGoTo = 0;
         while(whileDo){
-            provider.send(new GotoMessage(matrix.getNextPoint(true), matrix.getVehicleId()));
-            if(matrix.getNextPoint(false) == 1) {
+            if(matrix.getNextPoint(false) == lastGoTo) {
                 whileDo = false;
                 continue;
             }
+            provider.send(new GotoMessage(matrix.getNextPoint(true), matrix.getVehicleId()));
+            lastGoTo = matrix.getNextPoint(false);
             LOGGER.info("traffic: {}", provider.getTraffic().size());
             matrix.setServices(provider.getPoints());
             matrix.setCostMatrix(provider.getRoutes(),provider.getTraffic());
