@@ -100,6 +100,7 @@ public class CostMatrix {
             if(decrement) {
                 LOGGER.info("END {}", new Date().toString());
             }
+            dimension = 1000000;
             return 1;
         }
         String idPoint = Solutions.bestOf(solutions).getRoutes().stream().findFirst().get().
