@@ -85,7 +85,7 @@ public class CostMatrix {
 
         builder = VehicleRoutingProblem.Builder.newInstance().setFleetSize(VehicleRoutingProblem.FleetSize.INFINITE).addVehicle(vehicle).addAllJobs(services).setRoutingCost(costMatrix);
         vrp = builder.build();
-        vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.THREADS,"4").buildAlgorithm();//Jsprit.createAlgorithm(vrp);
+        vra = Jsprit.Builder.newInstance(vrp).setProperty(Jsprit.Parameter.THREADS,"4").setProperty(Jsprit.Parameter.ITERATIONS,"1000").buildAlgorithm();//Jsprit.createAlgorithm(vrp);
         solutions = vra.searchSolutions();
     }
 
@@ -97,19 +97,24 @@ public class CostMatrix {
     }
     public Integer getNextPoint(boolean decrement){
         if(Solutions.bestOf(solutions).getRoutes().size() == 0) {
-            LOGGER.info("END {}", new Date().toString());
-            return 1;
+            if(decrement) {
+                LOGGER.info("END {}", new Date().toString());
+                return 1;
+            }
         }
         String idPoint = Solutions.bestOf(solutions).getRoutes().stream().findFirst().get().
                 getTourActivities().getActivities().stream().findFirst().get().
                 getLocation().getId();
-        LOGGER.info("Point {}, Total Dimension Before {}", idPoint, dimension);
-
-        services.stream().filter(item -> item.getId().equalsIgnoreCase(idPoint)).forEach(item -> dimension = dimension - (decrement ? 0 : item.getSize().get(0)));
+        if(decrement) {
+            LOGGER.info("Point {}, Total Dimension Before {}", idPoint, dimension);
+        }
+        services.stream().filter(item -> item.getId().equalsIgnoreCase(idPoint)).forEach(item -> dimension = dimension - (decrement ? item.getSize().get(0) : 0));
         startLoc = idPoint;
-        LOGGER.info("Point {}, Total Dimension After {}", idPoint, dimension);
-        if(decrement)
-                visited.add(idPoint);
+
+        if(decrement){
+            LOGGER.info("Point {}, Total Dimension After {}", idPoint, dimension);
+            visited.add(idPoint);
+        }
         if(dimension < 0)
             LOGGER.info("SUKA HERE");
         return Integer.valueOf(idPoint);
