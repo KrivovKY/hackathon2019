@@ -13,4 +13,12 @@ public abstract class AbstractRouter {
 
     public abstract List<Route> getRoute(MainMap map, Point currPoint, Car currCar);
 
+    protected static Double getMoneyForPoint(MainMap map, Point point) {
+        for (Point p : map.getPoints()) {
+            if (point.getId().equals(p.getId())) {
+                return p.getMoney();
+            }
+        };
+        return 0d;
+    }
 }

@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 public class MapHandler {
-    public static final Double TOTAL_TIME = 480d;  //общее время задания
+    static final Double TOTAL_TIME = 480d;  //общее время задания
     private static final Logger LOGGER = LogManager.getLogger(MapHandler.class);
     private static final Point START = new Point("0", 0d);
     private static final Point HOME = new Point("1", 0d);
@@ -24,6 +24,7 @@ public class MapHandler {
         mainMap.setPoints(points);
         mainMap.setRoutes(routes);
         mainMap.updateJam(traffics);
+        mainMap.setTeamSum(0d);
     }
 
     /**
@@ -35,23 +36,39 @@ public class MapHandler {
      */
     public Point getNextPoint(Point currPoint, Car car) {
         LOGGER.info("get next point for car {} from point {}", car.getId(), currPoint.getId());
-        Route next;
+        if (currPoint.getId().equals("1")) {
+            LOGGER.debug("restore car capacity to EMPTY");
+            car.setCapacity(0d);
+        }
+        List<Route> next;
         // Ищем Лучший вариант
-        next = new NextPointRouter().getRoute(mainMap, currPoint, car).get(0);  // одна запись
+        next = new NextPointRouter().getRoute(mainMap, currPoint, car);  // одна запись
         // Проверяем возврат домой
-        if (mainMap.needGoHome(car, next.getTo())) {    //со следующей точки не успеваем вернуться
+        if (next==null || mainMap.needGoHome(car, next.get(0).getTo())) {    //со следующей точки не успеваем вернуться
             // ищем ближайшую точку
-            next = new NearPointRouter().getRoute(mainMap, currPoint, car).get(0);
+            next = new NearPointRouter().getRoute(mainMap, currPoint, car);
             // Проверяем возврат домой
-            if (mainMap.needGoHome(car, next.getTo())) {    //с ближайшей точки не успеваем вернуться
-                next = new WayHomeRouter().getRoute(mainMap, currPoint, car).get(0);
+            if (next==null || mainMap.needGoHome(car, next.get(0).getTo())) {    //с ближайшей точки не успеваем вернуться
+                if (currPoint.getId().equals("1")) {
+                    LOGGER.debug("FINISH");
+
+                } else {
+                    next = new WayHomeRouter().getRoute(mainMap, currPoint, car);
+                    LOGGER.info("need GO HOME. routes found {}", next);
+                    mainMap.setTeamSum(mainMap.getTeamSum() + car.getCapacity());
+                }
             }
         }
         if (next != null) {
-            mainMap.getPoint(next.getTo().getId()).setMoney(0d); //обнуляем сумму (больше в нее не заходим)
-            car.reduceRestTime(next.getTime());                   // уменьшаем оставшееся время
+            mainMap.getPoint(next.get(0).getTo().getId()).setMoney(0d); //обнуляем сумму (больше в нее не заходим)
+            car.reduceRestTime(next.get(0).getTime());                   // уменьшаем оставшееся время
+            car.addCapacity(next.get(0).getTo().getMoney());
+            return next.get(0).getTo();
+        } else {
+            LOGGER.info("NEXT POINT NOT FOUND");
+
         }
-        return next.getTo();
+        return null;
     }
 
     /**
@@ -95,4 +112,14 @@ public class MapHandler {
     public List<Car> getCars() {
         return mainMap.getCars();
     }
+
+    public Point getStart(){
+        return mainMap.getStartPoint();
+    }
+
+    public void printPoints() {
+        LOGGER.debug("TEAM summa = {}", mainMap.getTeamSum());
+        mainMap.getPoints().forEach(LOGGER::debug);
+    }
 }
+

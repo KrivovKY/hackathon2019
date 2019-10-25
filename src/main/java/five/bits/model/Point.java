@@ -1,8 +1,13 @@
 package five.bits.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.boot.logging.LoggerGroup;
+
 import java.util.Objects;
 
 public class Point {
+    private static final Logger LOGGER = LogManager.getLogger(Point.class);
     private String id;
     private Double money;
 
@@ -24,6 +29,7 @@ public class Point {
     }
 
     public void setMoney(Double money) {
+        //LOGGER.debug("set money for point {} from {} to {}", this.getId(), this.money, money);
         this.money = money;
     }
 
@@ -38,5 +44,13 @@ public class Point {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "id='" + id + '\'' +
+                ", money=" + money +
+                '}';
     }
 }

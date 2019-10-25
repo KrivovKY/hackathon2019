@@ -77,12 +77,15 @@ public class MainMap {
      * @return
      */
     public Boolean needGoHome(Car car, Point nextPoint) {
-        double nextHomeTime = WayHomeRouter.getHomeWayLength(this, nextPoint, new WayHomeRouter().getRoute(this, null, car));
-        LOGGER.info("best way to Home is {}, rest time is {}", nextHomeTime, car.getRestTime());
-        if (nextHomeTime > car.getRestTime()) {
+        LOGGER.debug("check route for car {} to home from {}", car, nextPoint);
+        LOGGER.debug("car rest capacity {}", car.getRestCapacity());
+        double nextHomeTime = WayHomeRouter.getHomeWayLength(this, nextPoint, new WayHomeRouter().getRoute(this, nextPoint, car));
+        //LOGGER.info("best way to Home is {}, rest time is {}", nextHomeTime, car.getRestTime());
+        Boolean go = nextHomeTime > car.getRestTime() || car.getRestCapacity()<nextPoint.getMoney();
+        if (go) {
             LOGGER.info("NEED GO HOME");
         }
-        return nextHomeTime > car.getRestTime();
+        return go;
     }
 
     public List<Point> getPoints() {

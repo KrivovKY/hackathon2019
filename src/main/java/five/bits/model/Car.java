@@ -1,11 +1,17 @@
 package five.bits.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Objects;
 
 import static five.bits.model.MapHandler.TOTAL_TIME;
 
 public class Car {
+    private static final Logger LOGGER = LogManager.getLogger(Car.class);
+
     public static final Double MAX_CAPACITY = 1000000d;
+    //public static final Double MAX_CAPACITY = 200000d;
     private String id;
     private Double capacity;
     private Double restTime;
@@ -42,11 +48,20 @@ public class Car {
     }
 
     public void reduceRestTime(Double time) {
-        this.restTime =- time;
+        this.restTime = this.restTime - time;
+        LOGGER.debug("reduce rest time for car {} to {}", this.getId(), this.restTime);
     }
 
     public void setRestTime(Double restTime) {
         this.restTime = restTime;
+    }
+
+    public Double getRestCapacity() {
+        return MAX_CAPACITY - this.capacity;
+    }
+
+    public void addCapacity(Double money) {
+        this.capacity = this.capacity + money;
     }
 
     @Override
@@ -60,5 +75,14 @@ public class Car {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "id='" + id + '\'' +
+                ", capacity=" + capacity +
+                ", restTime=" + restTime +
+                '}';
     }
 }

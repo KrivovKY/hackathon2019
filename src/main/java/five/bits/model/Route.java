@@ -46,13 +46,18 @@ public class Route implements Comparable {
      * @return
      */
     public static Route getRouteForPoint(List<Route> routes, Point from, Point to) {
+        //LOGGER.debug("get route from {} to {}", from, to);
         for (Route route : routes) {
-            if ((route.getFrom().equals(from) && route.getTo().equals(to)) ||
-                    (route.getFrom().equals(to) && route.getTo().equals(from))) {
-                LOGGER.info("found route from {} to {}", from.getId(), to.getId());
+            if ((route.getFrom().equals(from) && route.getTo().equals(to)) ) {
+                //LOGGER.info("found 1 route from {} to {}", from.getId(), to.getId());
                 return route;
             }
+            if ((route.getFrom().equals(to) && route.getTo().equals(from))) {
+                //LOGGER.info("found 2 route from {} to {}", from.getId(), to.getId());
+                return new Route(route.getTo(), route.getFrom(), route.getTime());
+            }
         }
+        LOGGER.error("route not found");
         return null;
     }
 
@@ -91,5 +96,15 @@ public class Route implements Comparable {
     @Override
     public int compareTo(Object o) {
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Route{" +
+                "from=" + from +
+                ", to=" + to +
+                ", time=" + time +
+                ", jamTime=" + jamTime +
+                '}';
     }
 }

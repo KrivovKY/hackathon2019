@@ -24,6 +24,8 @@ public class WayHomeRouter extends AbstractRouter {
      * @return
      */
     public static Double getHomeWayLength(MainMap map, Point fromPoint, List<Route> homeWay) {
+        //LOGGER.debug("get length for route to home from {}", fromPoint);
+
         double wayTime = 0;
         Point homePoint = map.getEndPoint(); //TODO homeWay.get(0);
         Route homeRoute = Route.getRouteForPoint(map.getRoutes(), fromPoint, homePoint);
@@ -44,7 +46,7 @@ public class WayHomeRouter extends AbstractRouter {
     @Override
     public List<Route> getRoute(MainMap map, Point current, Car currCar) {
         result.add(Route.getRouteForPoint(map.getRoutes(), current, map.getEndPoint()));
-        LOGGER.info("found Next point {} for car {}", result.get(0).getTo().getId(), currCar.getId());
+        LOGGER.info("found Next point {} for car {}", result.get(0), currCar.getId());
         return result;
     }
 }

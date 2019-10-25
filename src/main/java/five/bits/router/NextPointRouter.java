@@ -15,22 +15,39 @@ public class NextPointRouter extends AbstractRouter {
 
     @Override
     public List<Route> getRoute(MainMap map, Point current, Car currCar) {
+        //LOGGER.debug("point {}, car {}, ", current, currCar);
         List<Route> localRoutes = new ArrayList<>();
         // выбираем все смежные с данной точкой маршруты
+        //LOGGER.debug("Routes count {}", map.getRoutes().size());
         for (Route route : map.getRoutes()) {
-            if ((route.getTo().equals(current) && (route.getTo().getMoney() != 0)) &&     // совпала точка КУДА
-                    route.getTo().getMoney() < currCar.getCapacity()) {
-                // Переварачиваем ребро для сортировки
-                localRoutes.add(new Route(route.getTo(), route.getFrom(), route.getTime()));
+            //LOGGER.debug("check route {}", route);
+            if (route.getTo().equals(current)) {
+                Double moneyFrom = getMoneyForPoint(map, route.getFrom());
+                //LOGGER.debug("found point To {} with money {}", route.getTo(), moneyFrom);
+                if (moneyFrom !=0 && moneyFrom < currCar.getRestCapacity()) {
+                    route.getFrom().setMoney(moneyFrom);
+                    // Переварачиваем ребро для сортировки
+                    localRoutes.add(new Route(route.getTo(), route.getFrom(), route.getTime()));
+                }
             }
-            if ((route.getFrom().equals(current) && (route.getFrom().getMoney() != 0)) &&     // совпала точка ОТКУДА
-                    route.getFrom().getMoney() < currCar.getCapacity()) {
-                localRoutes.add(route);
+            if (route.getFrom().equals(current)) {
+                Double moneyTo = getMoneyForPoint(map, route.getTo());
+                //LOGGER.debug("found point From {} with money {}", route.getFrom(), moneyTo);
+                if (moneyTo !=0 && moneyTo < currCar.getRestCapacity()) {
+                    route.getTo().setMoney(moneyTo);
+                    localRoutes.add(route);
+                }
             }
         }
-        localRoutes.sort(Route.smartComparatorTo);
-        result.add(localRoutes.get(0));
-        LOGGER.info("found Next point {} for car {}", result.get(0).getTo().getId(), currCar.getId());
-        return result;
+        //localRoutes.forEach(route -> LOGGER.debug(route.toString()));
+        if (!localRoutes.isEmpty()) {
+            localRoutes.sort(Route.smartComparatorTo);
+            result.add(localRoutes.get(0));
+            LOGGER.info("found route {} for car {}", result, currCar.getId());
+            return result;
+        } else {
+            LOGGER.debug("NEXT route not found");
+            return null;
+        }
     }
 }
