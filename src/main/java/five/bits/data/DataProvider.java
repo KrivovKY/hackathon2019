@@ -143,7 +143,7 @@ public class DataProvider {
                             latch.countDown();
                             break;
                         case "carsum":
-                            LOGGER.info("goto response");
+                            LOGGER.debug("goto response");
                             latch.countDown();
                         case "point":
                         case "car":
