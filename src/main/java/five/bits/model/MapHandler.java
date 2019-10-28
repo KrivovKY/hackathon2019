@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 public class MapHandler {
-    static final Double TOTAL_TIME = 480d;  //общее время задания
+    static final Double TOTAL_TIME = 275d;  //общее время задания
     private static final Logger LOGGER = LogManager.getLogger(MapHandler.class);
     private static final Point START = new Point("0", 0d);
     private static final Point HOME = new Point("1", 0d);
